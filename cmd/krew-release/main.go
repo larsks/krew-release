@@ -29,6 +29,7 @@ type (
 		Release  string
 		Template string
 		Version  bool
+		Help     bool
 	}
 )
 
@@ -87,6 +88,8 @@ func getAssets(release string) ([]*Asset, error) {
 
 func init() {
 	flag.BoolVarP(&options.Version, "version", "v", false, "")
+	flag.BoolVarP(&options.Help, "help", "h", false, "")
+	flag.Usage = usage
 }
 
 func usage() {
@@ -97,6 +100,12 @@ func usage() {
 
 func parseArgs() {
 	flag.Parse()
+
+	if options.Help {
+		flag.CommandLine.SetOutput(os.Stdout)
+		usage()
+		os.Exit(0)
+	}
 
 	if flag.NArg() < 2 {
 		usage()
