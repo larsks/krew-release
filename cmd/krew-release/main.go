@@ -28,6 +28,7 @@ type (
 	Options struct {
 		Release  string
 		Template string
+		Output   string
 		Version  bool
 		Help     bool
 	}
@@ -87,6 +88,7 @@ func getAssets(release string) ([]*Asset, error) {
 }
 
 func init() {
+	flag.StringVarP(&options.Output, "output", "o", "", "Write output to named file")
 	flag.BoolVarP(&options.Version, "version", "v", false, "")
 	flag.BoolVarP(&options.Help, "help", "h", false, "")
 	flag.Usage = usage
@@ -131,5 +133,10 @@ func main() {
 		must(asset.DownloadAndChecksum(), "failed to calculate checksum for %s", asset.Name)
 	}
 
-	must(tmpl.Execute(os.Stdout, map[string][]*Asset{"assets": assets}), "failed to render template")
+	out := os.Stdout
+	if options.Output != "" {
+		out, err = os.Create(options.Output)
+		must(err, "failed to open output file for writing")
+	}
+	must(tmpl.Execute(out, map[string][]*Asset{"assets": assets}), "failed to render template")
 }
