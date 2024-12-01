@@ -2,6 +2,14 @@
 
 This is a tool for producing [krew] plugin manifests from GitHub releases.
 
+## Requirements
+
+You must have the [`gh`][ghcli] cli installed and configured.
+
+[ghcli]: https://cli.github.com/
+
+## Usage
+
 [krew]: https://krew.sigs.k8s.io/
 
 When run from inside a git repository, krew uses the [`gh`][ghcli] command line tool to get a list of assets from the given release. It iterates over these assets, downloading each one to calculate the required SHA256 checksum. `krew-release` requires that your assets are named using the format `<name>-<os>-<arch>.<anything>`; e.g. for my [`kubectl-saconfig`][saconfig] plugin, the assets in a given release are:
@@ -13,7 +21,6 @@ When run from inside a git repository, krew uses the [`gh`][ghcli] command line 
 - `kubectl-saconfig-linux-arm64.tar.gz`
 
 [saconfig]: https://github.com/larsks/kubectl-saconfig
-[ghcli]: https://cli.github.com/
 
 This information is used to render a template written in Go's [template language]. The template is provided with the following top-level attributes:
 
