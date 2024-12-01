@@ -32,6 +32,11 @@ type (
 		Version  bool
 		Help     bool
 	}
+
+	TemplateData struct {
+		Release string
+		Assets  []*Asset
+	}
 )
 
 var options Options
@@ -138,5 +143,10 @@ func main() {
 		out, err = os.Create(options.Output)
 		must(err, "failed to open output file for writing")
 	}
-	must(tmpl.Execute(out, map[string][]*Asset{"assets": assets}), "failed to render template")
+
+	data := TemplateData{
+		Assets:  assets,
+		Release: options.Release,
+	}
+	must(tmpl.Execute(out, data), "failed to render template")
 }
